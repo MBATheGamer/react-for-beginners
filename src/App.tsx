@@ -1,11 +1,9 @@
-import Alert from "./components/Alert";
+import Button from "./components/Button";
 
 export default function App() {
   return (
     <div>
-      <Alert>
-        Hello, <span>World</span>!
-      </Alert>
+      <Button onClick={() => console.log("Clicked")}>Click Me</Button>
     </div>
   );
 }
