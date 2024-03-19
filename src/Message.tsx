@@ -1,5 +1,7 @@
+let count = 0;
+
 export default function Message() {
-  let count = 0;
+  console.log("Message called", count);
 
   count += 1;
 
