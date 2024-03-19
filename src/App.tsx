@@ -1,22 +1,11 @@
-import { useState } from "react";
-
-// Avoid redundant state variables.
-// Group related variables inside an object.
-// Avoid deeply nested structures.
+import Message from "./Message";
 
 export default function App() {
-  // const [firstName, setFirstName] = useState("");
-  // const [lastName, setLastName] = useState("");
-  const [person, setPerson] = useState({
-    firstName: "",
-    lastName: "",
-  });
-
-  const [isLoading, setLoading] = useState(false);
-
   return (
     <div>
-      {person.firstName} {person.lastName}
+      <Message />
+      <Message />
+      <Message />
     </div>
   );
 }
