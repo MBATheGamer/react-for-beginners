@@ -1,4 +1,4 @@
-import { categories } from "@expense-tracker/utils/constants";
+import categories from "@expense-tracker/data/categories";
 
 type Props = {
   onSelectCatergory: (category: string) => void;
