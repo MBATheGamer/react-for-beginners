@@ -32,10 +32,26 @@ export default function App() {
     return () => controller.abort();
   }, []);
 
+  const addUser = () => {
+    const originalUsers = [...users];
+    const newUser = { id: 0, name: "MBATheGamer" };
+
+    setUsers([newUser, ...users]);
+
+    axios
+      .post("https://jsonplaceholder.typicode.com/users", newUser)
+      .then(({ data: savedUser }) => setUsers([savedUser, ...users]))
+      .catch(err => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+  };
+
   const deleteUser = (user: User) => {
     const originalUsers = [...users];
 
     setUsers(users.filter(u => user.id !== u.id));
+
     axios
       .delete("https://jsonplaceholder.typicode.com/users/" + user.id)
       .catch(err => {
@@ -48,15 +64,22 @@ export default function App() {
     <>
       {error && <p className="text-danger">{error}</p>}
       {isLoading && <div className="spinner-border"></div>}
+      <button className="btn btn-primary mb-3" onClick={addUser}>
+        Add
+      </button>
       <ul className="list-group">
         {users.map(user => (
           <li
             key={user.id}
             className="list-group-item d-flex justify-content-between"
-            onClick={() => deleteUser(user)}
           >
             {user.name}
-            <button className="btn btn-outline-danger">Delete</button>
+            <button
+              className="btn btn-outline-danger"
+              onClick={() => deleteUser(user)}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>
