@@ -1,8 +1,8 @@
-import create from "./http-service";
+import createHttpService from "./http-service";
 
 export type User = {
   id: number;
   name: string;
 };
 
-export default create("users");
+export default createHttpService<User>("users");

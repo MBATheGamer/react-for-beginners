@@ -4,14 +4,14 @@ type Entity = {
   id: number;
 };
 
-class HttpService {
+class HttpService<T extends Entity> {
   private readonly endpoint: string;
 
   constructor(endpoint: string) {
     this.endpoint = endpoint;
   }
 
-  getAll<T>() {
+  getAll() {
     const controller = new AbortController();
 
     const request = apiClient.get<T[]>(this.endpoint, {
@@ -24,11 +24,11 @@ class HttpService {
     };
   }
 
-  create<T>(entity: T) {
+  create(entity: T) {
     return apiClient.post(this.endpoint, entity);
   }
 
-  update<T extends Entity>(entity: T) {
+  update(entity: T) {
     return apiClient.patch(`${this.endpoint}/${entity.id}`, entity);
   }
 
@@ -37,6 +37,7 @@ class HttpService {
   }
 }
 
-const create = (endpoint: string) => new HttpService(endpoint);
+const createHttpService = <T extends Entity>(endpoint: string) =>
+  new HttpService<T>(endpoint);
 
-export default create;
+export default createHttpService;
