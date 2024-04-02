@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
-import apiClient, { CanceledError } from "./services/api-client";
-
-type User = {
-  id: number;
-  name: string;
-};
+import { CanceledError } from "./services/api-client";
+import userService, { User } from "./services/user-service";
 
 export default function App() {
   const [users, setUsers] = useState<User[]>([]);
@@ -12,13 +8,11 @@ export default function App() {
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    const controller = new AbortController();
-
     setLoading(true);
-    apiClient
-      .get<User[]>("users", {
-        signal: controller.signal,
-      })
+
+    const { request, cancel } = userService.getAll();
+
+    request
       .then(response => {
         setUsers(response.data);
         setLoading(false);
@@ -29,19 +23,23 @@ export default function App() {
         setError(err.message);
       });
 
-    return () => controller.abort();
+    return () => cancel();
   }, []);
 
   const addUser = () => {
     const originalUsers = [...users];
+
     const newUser = { id: 0, name: "MBATheGamer" };
 
     setUsers([newUser, ...users]);
 
-    apiClient.post("users", newUser).catch(err => {
-      setError(err.message);
-      setUsers(originalUsers);
-    });
+    userService
+      .create(newUser)
+      .then(({ data: savedUser }) => [savedUser, ...users])
+      .catch(err => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
   };
 
   const updateUser = (user: User) => {
@@ -50,7 +48,7 @@ export default function App() {
 
     setUsers(users.map(u => (u.id === user.id ? updatedUser : u)));
 
-    apiClient.patch(`users/${user.id}`, updatedUser).catch(err => {
+    userService.update(updatedUser).catch(err => {
       setError(err.message);
       setUsers(originalUsers);
     });
@@ -61,7 +59,7 @@ export default function App() {
 
     setUsers(users.filter(u => user.id !== u.id));
 
-    apiClient.delete(`users/${user.id}`).catch(err => {
+    userService.delete(user.id).catch(err => {
       setError(err.message);
       setUsers(originalUsers);
     });
