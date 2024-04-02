@@ -10,7 +10,7 @@ export default function App() {
   useEffect(() => {
     setLoading(true);
 
-    const { request, cancel } = userService.getAll();
+    const { request, cancel } = userService.getAll<User>();
 
     request
       .then(response => {
@@ -34,7 +34,7 @@ export default function App() {
     setUsers([newUser, ...users]);
 
     userService
-      .create(newUser)
+      .create<User>(newUser)
       .then(({ data: savedUser }) => [savedUser, ...users])
       .catch(err => {
         setError(err.message);
@@ -48,7 +48,7 @@ export default function App() {
 
     setUsers(users.map(u => (u.id === user.id ? updatedUser : u)));
 
-    userService.update(updatedUser).catch(err => {
+    userService.update<User>(updatedUser).catch(err => {
       setError(err.message);
       setUsers(originalUsers);
     });
